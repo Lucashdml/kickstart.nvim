@@ -90,6 +90,20 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.opt.hidden = false
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
+vim.opt.undofile = true
+vim.opt.colorcolumn = '80'
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
+vim.opt.termguicolors = true
+
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
 
@@ -165,17 +179,19 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
 vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })
 vim.keymap.set('n', '<C-S>', ':w<ENTER>', { noremap = true })
-vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
-vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { silent = true })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { silent = true })
-vim.keymap.set("n", "n", "nzzzv", { silent = true })
-vim.keymap.set("n", "N", "Nzzzv", { silent = true })
-vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selected lines up" })
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selected lines down" })
+vim.keymap.set('n', '<C-n>', '<cmd>NvimTreeToggle<CR>', { desc = 'nvimtree toggle window' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { silent = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { silent = true })
+vim.keymap.set('n', 'n', 'nzzzv', { silent = true })
+vim.keymap.set('n', 'N', 'Nzzzv', { silent = true })
+vim.keymap.set('n', 'Q', '<nop>')
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move selected lines up' })
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move selected lines down' })
+vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { silent = true, desc = 'Undotree Toggle' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -198,6 +214,10 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('i', '<C-h>', '<Left>', { desc = 'move left' })
+vim.keymap.set('i', '<C-l>', '<Right>', { desc = 'move right' })
+vim.keymap.set('i', '<C-j>', '<Down>', { desc = 'move down' })
+vim.keymap.set('i', '<C-k>', '<Up>', { desc = 'move up' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -246,7 +266,13 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',    opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
+
+  {
+    'mbbill/undotree',
+    lazy = true,
+    cmd = 'UndotreeToggle',
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -266,26 +292,49 @@ require('lazy').setup({
   },
 
   {
-    "windwp/nvim-autopairs",
-    -- Optional dependency
-    dependencies = { 'hrsh7th/nvim-cmp' },
+    'goolord/alpha-nvim',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      'nvim-lua/plenary.nvim',
+    },
     config = function()
-      require("nvim-autopairs").setup {}
-      -- If you want to automatically add `(` after selecting a function or method
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-      local cmp = require('cmp')
-      cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-      )
+      local alpha = require 'alpha'
+      local config = require('alpha.themes.startify').config
+      -- there's no name, access via index
+      config.layout[2].val = {
+        [[                                                                     ]],
+        [[       ████ ██████           █████      ██                     ]],
+        [[      ███████████             █████                             ]],
+        [[      █████████ ███████████████████ ███   ███████████   ]],
+        [[     █████████  ███    █████████████ █████ ██████████████   ]],
+        [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
+        [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
+        [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
+      }
+
+      alpha.setup(config)
     end,
   },
 
   {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
+    'windwp/nvim-autopairs',
+    -- Optional dependency
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    config = function()
+      require('nvim-autopairs').setup {}
+      -- If you want to automatically add `(` after selecting a function or method
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+      local cmp = require 'cmp'
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+    end,
+  },
+
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
     dependencies = {
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
     },
     config = function()
       require('nvim-tree').setup {
@@ -303,7 +352,7 @@ require('lazy').setup({
         },
         view = {
           adaptive_size = false,
-          side = "left",
+          side = 'left',
           width = 30,
           preserve_window_proportions = true,
         },
@@ -322,7 +371,7 @@ require('lazy').setup({
         renderer = {
           root_folder_label = false,
           highlight_git = true,
-          highlight_opened_files = "none",
+          highlight_opened_files = 'none',
 
           indent_markers = {
             enable = true,
@@ -337,26 +386,26 @@ require('lazy').setup({
             },
 
             glyphs = {
-              default = "󰈚",
-              symlink = "",
+              default = '󰈚',
+              symlink = '',
               folder = {
-                default = "",
-                empty = "",
-                empty_open = "",
-                open = "",
-                symlink = "",
-                symlink_open = "",
-                arrow_open = "",
-                arrow_closed = "",
+                default = '',
+                empty = '',
+                empty_open = '',
+                open = '',
+                symlink = '',
+                symlink_open = '',
+                arrow_open = '',
+                arrow_closed = '',
               },
               git = {
-                unstaged = "✗",
-                staged = "✓",
-                unmerged = "",
-                renamed = "➜",
-                untracked = "★",
-                deleted = "",
-                ignored = "◌",
+                unstaged = '✗',
+                staged = '✓',
+                unmerged = '',
+                renamed = '➜',
+                untracked = '★',
+                deleted = '',
+                ignored = '◌',
               },
             },
           },
@@ -380,7 +429,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -426,7 +475,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -647,6 +696,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         solargraph = {},
+        html = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -855,9 +905,10 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     opts = {
+      contrast = 'hard',
       background = {
         transparent = true,
-      }
+      },
     },
   },
 
