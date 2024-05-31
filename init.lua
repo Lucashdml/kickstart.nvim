@@ -122,7 +122,7 @@ vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
+vim.opt.showmode = true
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -191,6 +191,8 @@ vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move selected lines up' })
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move selected lines down' })
 vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { silent = true, desc = 'Undotree Toggle' })
+vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { silent = true, desc = 'Previous buffer' })
+vim.keymap.set('n', 'L', '<cmd>bnext<CR>', { silent = true, desc = 'Next buffer' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
