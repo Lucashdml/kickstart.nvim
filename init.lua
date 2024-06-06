@@ -287,6 +287,15 @@ require('lazy').setup({
     },
   },
 
+  {
+    'turbio/bracey.vim',
+    cmd = { 'Bracey', 'BraceyStop', 'BraceyReload', 'BraceyEval' },
+    lazy = false,
+    keys = {
+      { '<leader>fx', '<cmd>silent Bracey<CR>', desc = 'Start Live Server' },
+    },
+  },
+
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
