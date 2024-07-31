@@ -90,7 +90,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 vim.opt.hidden = false
-vim.opt.swapfile = false
+vim.opt.swapfile = true
 vim.opt.backup = false
 vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
 vim.opt.undofile = true
@@ -289,10 +289,11 @@ require('lazy').setup({
   {
     'turbio/bracey.vim',
     cmd = { 'Bracey', 'BraceyStop', 'BraceyReload', 'BraceyEval' },
-    lazy = false,
+    lazy = true,
     keys = {
       { '<leader>fx', '<cmd>silent Bracey<CR>', desc = 'Start Live Server' },
     },
+    opts = {},
   },
 
   -- "gc" to comment visual regions/lines
@@ -380,6 +381,7 @@ require('lazy').setup({
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
+    lazy = true,
     dependencies = {
       'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
     },
@@ -744,6 +746,7 @@ require('lazy').setup({
         -- clangd = {},
         solargraph = {},
         html = {},
+        angularls = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -861,12 +864,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
