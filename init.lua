@@ -158,7 +158,7 @@ vim.opt.list = true
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -168,6 +168,7 @@ vim.opt.scrolloff = 10
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
+
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -178,7 +179,6 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 vim.keymap.set('i', 'jj', '<Esc>', { noremap = true })
 vim.keymap.set('n', '<C-S>', ':w<ENTER>', { noremap = true })
-vim.keymap.set('n', '<C-n>', '<cmd>NvimTreeToggle<CR>', { desc = 'nvimtree toggle window' })
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { silent = true })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { silent = true })
 vim.keymap.set('n', 'n', 'nzzzv', { silent = true })
@@ -186,7 +186,6 @@ vim.keymap.set('n', 'N', 'Nzzzv', { silent = true })
 vim.keymap.set('n', 'Q', '<nop>')
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move selected lines up' })
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move selected lines down' })
-vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { silent = true, desc = 'Undotree Toggle' })
 vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { silent = true, desc = 'Previous buffer' })
 vim.keymap.set('n', 'L', '<cmd>bnext<CR>', { silent = true, desc = 'Next buffer' })
 
@@ -300,6 +299,9 @@ require('lazy').setup({
     'mbbill/undotree',
     lazy = true,
     cmd = 'UndotreeToggle',
+    keys = {
+      vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<CR>', { silent = true, desc = 'Undotree Toggle' }),
+    },
   },
 
   {
@@ -379,6 +381,9 @@ require('lazy').setup({
     'nvim-tree/nvim-tree.lua',
     version = '*',
     lazy = true,
+    keys = {
+      vim.keymap.set('n', '<C-n>', '<cmd>NvimTreeToggle<CR>', { desc = 'nvimtree toggle window' }),
+    },
     dependencies = {
       'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
     },
@@ -475,28 +480,24 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  {
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>c_', hidden = true },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>d_', hidden = true },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>r_', hidden = true },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>s_', hidden = true },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>w_', hidden = true },
-      }
-    end,
+    event = 'VimEnter',
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+    keys = {
+      {
+        '<leader>?',
+        function()
+          require('which-key').show { global = false }
+        end,
+        desc = 'Buffer Local Keymaps (which-key)',
+      },
+    },
   },
-
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -758,7 +759,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -984,6 +985,8 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+
+      require('mini.icons').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
