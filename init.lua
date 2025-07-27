@@ -95,9 +95,9 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
 vim.opt.undofile = true
 vim.opt.colorcolumn = '80'
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.tabstop = 3
+vim.opt.softtabstop = 3
+vim.opt.shiftwidth = 3
 vim.opt.expandtab = true
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
@@ -839,10 +839,21 @@ require('lazy').setup({
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+        local filetype = vim.bo[bufnr].filetype
+
+        if disable_filetypes[filetype] then
+          return
+        end
+
+        -- Perform the same formatting as <leader>f
+        require('conform').format {
+          async = true,
+          lsp_fallback = true,
+          bufnr = bufnr,
         }
+
+        -- Return false to prevent the default format_on_save behavior
+        return false
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
@@ -856,7 +867,6 @@ require('lazy').setup({
       },
     },
   },
-
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
