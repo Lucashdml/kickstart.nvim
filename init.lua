@@ -337,7 +337,12 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    'goolord/alpha-nvim',
+    config = function()
+      require('alpha').setup(require('alpha.themes.dashboard').config)
+    end,
+  },
   {
     'goolord/alpha-nvim',
     lazy = false,
@@ -359,11 +364,16 @@ require('lazy').setup({
         [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
         [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
       }
+      opts = {
+        position = 'center',
+        hl = 'Type',
+      }
 
       alpha.setup(config)
     end,
   },
 
+  { 'ThePrimeagen/vim-be-good' },
   {
     'windwp/nvim-autopairs',
     -- Optional dependency
